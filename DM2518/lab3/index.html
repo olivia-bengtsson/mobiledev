@@ -4,7 +4,6 @@
   <meta charset="utf-8">
   <link rel="stylesheet" href="libs/onsenui/css/onsenui.css"/>
   <link rel="stylesheet" href="libs/onsenui/css/onsen-css-components.css"/>
-  <link rel="stylesheet" href="css/style.css"/>
   <script src="libs/onsenui/js/onsenui.min.js"></script>
   <script>
   //ons.platform.select('android')
@@ -35,6 +34,9 @@
       </ons-list-item>
       <ons-list-item onclick="showPage('face.html')" modifier="chevron" tappable>
         Feel Your Face
+      </ons-list-item>
+      <ons-list-item onclick="showPage('about.html')" modifier="chevron" tappable>
+        About
       </ons-list-item>
     </ons-list>
   </ons-page>
@@ -75,9 +77,9 @@
       <ul>
         <ons-list-item>Let your arms hang loose.</ons-list-item>
         <ons-list-item>Become aware of the shoulders.</ons-list-item>
-        <ons-list-item>Sons-list-itemghtly ons-list-itemft one shoulder and release it.</ons-list-item>
+        <ons-list-item>Slightly lift one shoulder and release it.</ons-list-item>
         <ons-list-item>Let the shoulder come all the way down.</ons-list-item>
-        <ons-list-item>ons-list-itemft the other shoulder and release it.</ons-list-item>
+        <ons-list-item>Lift the other shoulder and release it.</ons-list-item>
         <ons-list-item>Alternate three more times on each side.</ons-list-item>
         <ons-list-item>Experience the breath flowing in and out of the body.</ons-list-item>
       </ul>
@@ -103,10 +105,26 @@
         <ons-list-item>Air flowing through the nostrils.</ons-list-item>
         <ons-list-item>Cheeks.</ons-list-item>
         <ons-list-item>Jaw.</ons-list-item>
-        <ons-list-item>ons-list-itemps.</ons-list-item>
+        <ons-list-item>Lips.</ons-list-item>
         <ons-list-item>Tongue.</ons-list-item>
         <ons-list-item>Whole of the head.</ons-list-item>
         <ons-list-item>The space surrounding the head.</ons-list-item>
+      </ul>
+    </div>
+  </ons-page>
+</ons-template>
+
+<ons-template id="about.html">
+  <ons-page id="about">
+    <ons-toolbar>
+      <div class="left"><ons-back-button>Menu</ons-back-button></div>
+      <div class="center">About Us</div>
+    </ons-toolbar>
+    <div class="page-content">
+      <ul>
+          <ons-list-item>Gustav and Felix</ons-list-item>
+          <ons-list-item>Born in 1995</ons-list-item>
+          <ons-list-item>Play in the band TBD</ons-list-item>
       </ul>
     </div>
   </ons-page>
