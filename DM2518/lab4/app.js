@@ -48,11 +48,14 @@ app.setupSendMessage = function() {
 
 	newMessageBtn.addEventListener("click", function(event) {
 		var message = newMessageInput.value;
+		var recieverInput = document.getElementById('recieverInput').value;
+		var recieverName = recieverInput;
 		newMessageInput.value = '';
 		if (app.connected) {
-			var msg = JSON.stringify({user: app.username, message: message})
+			var msg = JSON.stringify({user: app.username, message: message, reciever: recieverName})
 			app.publish(msg);
 		}
+		document.getElementById('recieverInput').value = '';
 	});
 }
 
@@ -90,8 +93,10 @@ app.onMessageArrived = function(message) {
 	var o = JSON.parse(message.payloadString);
 	hyper.log(o.user);
 
-	var finalmessage = '<div class="messageContainer style="padding:5px;"><span class="name" style="font-weight:bold;">'+ o.user +': </span><span class="message">'+o.message+'</div>';
-	showMessages.innerHTML = showMessages.innerHTML + finalmessage;
+	if(o.reciever == app.username || app.username == o.user || o.reciever == ''){
+		var finalmessage = '<div class="messageContainer style="padding:5px;"><span class="name" style="font-weight:bold;">'+ o.user +': </span><span class="message">'+o.message+'</div>';
+		showMessages.innerHTML = showMessages.innerHTML + finalmessage;
+	}	
 }
 
 app.onConnect = function(context) {
@@ -105,14 +110,17 @@ app.onConnectFailure = function(e){
 }
 
 app.onConnectionLost = function(responseObject) {
-	var message = "I lost connection!";
-	var msg = JSON.stringify({user: app.username, message: message})
-	app.publish(msg);
-
 	app.status("Connection lost!");
 	console.log("Connection lost: "+responseObject.errorMessage);
 	app.connected = false;
 }
+
+// app.sendLastWillMessage = function() {
+// 	hyper.log('Inne i lastwill');
+// 	var message = 'Goodbye';
+// 	var msg = JSON.stringify({user: app.username, message: message})
+// 	app.publish(msg);
+// }
 
 app.status = function(s) {
 	console.log(s);
