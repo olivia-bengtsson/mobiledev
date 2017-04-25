@@ -22,13 +22,13 @@
 <!-- This is the first page, naming convention is to use ."html" for page templates (they can also be placed in separate files, so this makes kind of sense). -->
 
 <ons-tabbar>
-  <ons-tab label="About" page="about.html" active>
+  <ons-tab label="About" icon="female" page="about.html" active>
   </ons-tab>
-  <ons-tab label="Feet" page="feet.html">
+  <ons-tab label="Feet" icon="eye" page="feet.html">
   </ons-tab>
-  <ons-tab label="Shoulders" page="shoulders.html">
+  <ons-tab label="Shoulders" icon="compass" page="shoulders.html">
   </ons-tab>
-  <ons-tab label="Face" page="face.html">
+  <ons-tab label="Face" icon="bank" page="face.html">
   </ons-tab>
 </ons-tabbar>
 
@@ -36,6 +36,7 @@
   <ons-page id="feet">
     <ons-toolbar>
       <div class="center">Feel Your Feet</div>
+      <div class="right"><ons-switch>Done</ons-switch></div>
     </ons-toolbar>
     <img src="images/photo-feet.jpg" width="100%">
     <div class="page-content">
