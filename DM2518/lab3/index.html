@@ -25,7 +25,7 @@
   <ons-page id="pageMain">
     <ons-toolbar>
       <div class="center">Relaxation iBeacons</div>
-      <div class="right"><ons-button onclick="showDialog(dialog1)">Click Me</ons-button></div>
+      <div class="right"><ons-button onclick="fromTemplate()">Click Me</ons-button></div>
     </ons-toolbar>
     <ons-list>
       <ons-list-item onclick="showPage('feet.html')" modifier="chevron" tappable>
@@ -42,6 +42,20 @@
       </ons-list-item>
     </ons-list>
   </ons-page>
+</ons-template>
+
+<ons-template id="dialog.html">
+  <ons-dialog id="dialog">
+    <div style="text-align: center; padding: 10px;">
+      <p>
+        Det här är en dialog hejhej waaaa
+      <p>
+
+      <p>
+        <ons-button onclick="hideDialog('dialog')">Close</ons-button>
+      </p>
+    </div>
+  </ons-dialog>
 </ons-template>
 
 <ons-template id="feet.html">
@@ -133,6 +147,25 @@
 </ons-template>
 
 <script>
+var hideDialog = function(id) {
+  document
+    .getElementById(id)
+    .hide();
+};
+var fromTemplate = function() {
+  var dialog = document.getElementById('dialog');
+
+  if (dialog) {
+    dialog.show();
+  }
+  else {
+    ons.createDialog('dialog.html')
+      .then(function(dialog) {
+        dialog.show();
+      });
+  }
+   };
+
 function showPage(page) {
   // jQuery returns an array of DOM objects, we want the first DOM object
   // which is the have that has the pushPage function.
