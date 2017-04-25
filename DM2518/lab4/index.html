@@ -5,7 +5,7 @@
 	<meta name="viewport" content="width=device-width, user-scalable=no
 		initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
 
-	<title>EMQTT Painter</title>
+	<title>EMQTT Painter test</title>
 
 	<style>
 		@import 'ui/css/evothings-app.css';
@@ -13,6 +13,7 @@
 		{
 				display:table;
 				overflow:hidden;
+				font-size: 20px;
 		}
 		div
 		{
@@ -22,6 +23,24 @@
 		{
 				height:100%;
 		}
+
+		.userinfo {
+
+		}
+		label {
+			margin-right: 5px;
+			font-size: 20px;
+		}
+		button {
+			display: inline-block;
+			
+		}
+		.smallinp {
+			width: 100px !important;
+			margin-right: 15px;
+
+		}
+
 	</style>
 
 	<script>
@@ -42,30 +61,24 @@
 		<img class="logotype" src="ui/images/logo.svg" alt="Evothings">
 	</header>
 
-	<h1>MQTT Painter</h1>
-
+	<h1>Message</h1>
 	<p>
 		<span id="info">Not Connected</span>
 		<button id="connect" onclick="app.setupConnection();">Reconnect</button>
 	</p>
+	<div class="userinfo">
+		<label for="username">Username</label>
+		<input class="smallinp" name="username" id="username" type="text">
+		<button id="changeuname">change</button>
+	</div>
+	<div id="writemessages">
+		<h2>New message</h2>
+		<label for="username">Message</label>
+		<input class="smallinp" name="message" id="newMessage" type="text">
+		<button id="submitMessage">Submit</button>
+	</div>
+	<div id="showMessages"></div>
 
-	<div class="dummy"></div>
-	<div class="canvas-container"><canvas id="canvas" style="margin: 0px;"></canvas></div>
-
-	<script>
-		// Make the canvas fill the part of the screen that's not taken up by other elements.
-		console.log("loading...");
-		window.blockMenuHeaderScroll = true;
-		document.body.style.overflow = "hidden";
-		document.onreadystatechange = function () {
-			if (document.readyState == "complete") {
-				var canvas = document.getElementById("canvas");
-				canvas.width = canvas.parentElement.clientWidth;
-				canvas.height = canvas.parentElement.clientHeight;
-				console.log("onload: "+canvas.width+"x"+canvas.height);
-			}
-		};
-	</script>
 
 	<script src="libs/mqttws/mqttws.js"></script>
 	</body>

@@ -10,17 +10,10 @@ var port = 8084;
 var user = 'anon';
 var password = 'ymous';
 
+
 app.connected = false;
 app.ready = false;
 
-// Simple function to generate a color from the device UUID
-app.generateColor = function(uuid) {
-	var code = parseInt(uuid.split('-')[0], 16)
-	var blue = (code >> 16) & 31;
-	var green = (code >> 21) & 31;
-	var red = (code >> 27) & 31;
-	return "rgb(" + (red << 3) + "," + (green << 3) + "," + (blue << 3) + ")"
-}
 
 app.initialize = function() {
 	document.addEventListener(
@@ -31,54 +24,35 @@ app.initialize = function() {
 
 app.onReady = function() {
 	if (!app.ready) {
-		app.color = app.generateColor(device.uuid); // Generate our own color from UUID
-		app.pubTopic = '/paint/' + device.uuid + '/evt'; // We publish to our own device topic
-		app.subTopic = '/paint/+/evt'; // We subscribe to all devices using "+" wildcard
-		app.setupCanvas();
+		app.username = 'Anonymous';
+		app.pubTopic = '/gustav/' + device.uuid + '/evt'; // We publish to our own device topic
+		app.subTopic = '/gustav/+/evt'; // We subscribe to all devices using "+" wildcard
+		app.setupInfo();
+		app.setupSendMessage();
 		app.setupConnection();
 		app.ready = true;
 	}
 }
 
-app.setupCanvas = function() {
-	app.canvas = document.getElementById("canvas");
-	app.ctx = app.canvas.getContext('2d');
-	var left, top;
-	{
-		var totalOffsetX = 0;
-		var totalOffsetY = 0;
-		var curElement = canvas;
-		do {
-			totalOffsetX += curElement.offsetLeft;
-			totalOffsetY += curElement.offsetTop;
-		} while (curElement = curElement.offsetParent)
-		app.left = totalOffsetX;
-		app.top = totalOffsetY;
-	}
-	
-	// We want to remember the beginning of the touch as app.pos
-	canvas.addEventListener("touchstart", function(event) {
-		// Found the following hack to make sure some
-		// Androids produce continuous touchmove events.
-		if (navigator.userAgent.match(/Android/i)) {
-			event.preventDefault();
-		}
-		var t = event.touches[0];
-		var x = Math.floor(t.clientX) - app.left;
-		var y = Math.floor(t.clientY) - app.top;
-		app.pos = {x:x, y:y};
+app.setupInfo = function(){
+	var unamebtn = document.getElementById('changeuname');
+	var unameinput = document.getElementById('username');
+
+	unamebtn.addEventListener("click", function(event) {
+		app.username = unameinput.value;
 	});
-	
-	// Then we publish a line from-to with our color and remember our app.pos
-	canvas.addEventListener("touchmove", function(event) {
-		var t = event.touches[0];
-		var x = Math.floor(t.clientX) - app.left;
-		var y = Math.floor(t.clientY) - app.top;
+}
+app.setupSendMessage = function() {
+	var newMessageBtn = document.getElementById('submitMessage');
+	var newMessageInput = document.getElementById('newMessage');
+
+	newMessageBtn.addEventListener("click", function(event) {
+		var message = newMessageInput.value;
+		newMessageInput.value = '';
 		if (app.connected) {
-			var msg = JSON.stringify({from: app.pos, to: {x:x, y:y}, color: app.color})
+			var msg = JSON.stringify({user: app.username, message: message})
 			app.publish(msg);
 		}
-		app.pos = {x:x, y:y};
 	});
 }
 
@@ -112,12 +86,12 @@ app.unsubscribe = function() {
 }
 
 app.onMessageArrived = function(message) {
+	var showMessages = document.getElementById('showMessages');
 	var o = JSON.parse(message.payloadString);
-	app.ctx.beginPath();
-	app.ctx.moveTo(o.from.x, o.from.y);
-	app.ctx.lineTo(o.to.x, o.to.y);
-	app.ctx.strokeStyle = o.color;
-	app.ctx.stroke();
+	hyper.log(o.user);
+
+	var finalmessage = '<div class="messageContainer style="padding:5px;"><span class="name" style="font-weight:bold;">'+ o.user +': </span><span class="message">'+o.message+'</div>';
+	showMessages.innerHTML = showMessages.innerHTML + finalmessage;
 }
 
 app.onConnect = function(context) {
@@ -131,6 +105,10 @@ app.onConnectFailure = function(e){
 }
 
 app.onConnectionLost = function(responseObject) {
+	var message = "I lost connection!";
+	var msg = JSON.stringify({user: app.username, message: message})
+	app.publish(msg);
+
 	app.status("Connection lost!");
 	console.log("Connection lost: "+responseObject.errorMessage);
 	app.connected = false;
