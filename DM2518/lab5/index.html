@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.css" />
     <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
     <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.js"></script>
-   <!-- <script src="Chart.js"></script>-->
+   <script src="libs/Chart.js"></script>
 
     <!-- This script, cordova.js,  is built into Evothings Viewer (i.e. you won't need to add this file to your project) The idea is to pick up a http resource, even if you're using https, which would normally create a cross-protocol violation. The HTTP plug-in from Apache Cordova allows this to be carried out, see especially this post: https://evothings.com/evothings-secured-now-serving-over-https/ -->
 
@@ -132,12 +132,14 @@ function printData(rsensor)
     {
         if (rsensor && rsensor.data) 
             {
+
+              console.log("rsensor: ", rsensor);
             // Display the info.
-                html = '<h1>rsensor Data</h1>'
+                html = '<h1>Sensor </h1>'
                  + '<br /><div id="time">Time  ' + rsensor.data.timestamp + '</div>'
                  + '<div id="hum">Humidity ' + rsensor.data.h + ' % (rel)</div>'
                  + '<div id="temp">Temperature ' + rsensor.data.t + ' celcius</div>'
-                 + '<img src="' + rsensor.image + '" />'
+                 + '<img src="' + rsensor.image + '" width=50%  height = 50%/>'
             } 
     else 
             {
