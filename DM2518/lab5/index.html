@@ -35,7 +35,12 @@
   <option value="6">Sensor 6</option>
 </select>
 <button onClick="getJSON();">Retrieve some sensor data</button>
-<div id="printHere"></div>
+<div id="charts" style="display: none">
+    <canvas id="myChart" width="400" height="400"></canvas>
+    <canvas id="carbon" width="400" height="400"></canvas>
+</div>
+<div id="error" style="display: none">Error, could not retrieve data from sensor</div>
+
 
 <script>
 
@@ -114,16 +119,19 @@ function getJSON() {
                         },
                     success: function(response) 
                         {
-                            console.log(response);
                             if (response && response[0]) 
                                 {
-                                    sensor.data = response[0];
-                                    sensor.fullData = response;
-                                    console.log('inne i ajaxresponse');
-                                    printData(sensor);
+                                    // sensor.data = response[0];
+                                    // sensor.fullData = response;
+                                    handleData(response)
+                                    // printData(sensor);
                             }
                             else {
-                                printData(sensor, true)
+                                // printData(sensor, true)
+                                console.log
+                                    $('#error').show();
+                                    $('#charts').hide();
+
                             }
                         }
                 });
@@ -131,25 +139,55 @@ function getJSON() {
 }
 
 
-function printData(rsensor, error = false)    
-    {
-        if (rsensor && rsensor.data) 
-            {
-                console.log('första ifen')
-            // Display the info.
-                html = '<h1>rsensor Data</h1>'
-                 + '<br /><div id="time">Time  ' + rsensor.data.timestamp + '</div>'
-                 + '<div id="hum">Humidity ' + rsensor.data.h + ' % (rel)</div>'
-                 + '<div id="temp">Temperature ' + rsensor.data.t + ' celcius</div>'
-                 + '<img src="' + rsensor.image + '" />'
-            } 
-    if (error) 
-            {
-                html = '<h1>Sensor Data</h1>'
-                 + '<br />Sorry, sensor data not available right now :(</br>'
-            }
-    document.getElementById("printHere").innerHTML= html;
+function handleData(data) {
+    console.log(data);
+    var templist = [];
+    var timelist = [];
+    var carbonlist = [];
+    var i; 
+    for (i in data.reverse()){
+        templist.push(data[i].t)
+        timelist.push(data[i].timestamp.split('.')[0])
+        carbonlist.push(data[i].c)
     }
+    console.log(timelist);
+    var ctx = document.getElementById("myChart").getContext('2d');
+    var myLineChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: timelist,
+            datasets: [{
+              label: 'Temperature',
+              data: templist,
+              backgroundColor: "rgba(153,255,51,0.4)",
+              fill: false
+            }]
+        },
+        options: {
+        }
+    });
+    var ctx2 = document.getElementById("carbon").getContext('2d');
+    var myLineChart2 = new Chart(ctx2, {
+        type: 'line',
+        data: {
+            labels: timelist,
+            datasets: [{
+              label: 'Carbon',
+              data: carbonlist,
+              backgroundColor: "rgba(255,153,0,0.4)",
+              fill: false
+            }]
+        },
+        options: {
+        }
+    });
+    
+    $('#error').hide();
+    $('#charts').show();
+
+}
+
+
 
 
 </script><button onclick="history.back()">Exit</button><br />
