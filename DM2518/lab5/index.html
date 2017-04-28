@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.css" />
     <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
     <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.js"></script>
-   <!-- <script src="Chart.js"></script>-->
+    <script src="libs/Chart.js"></script>
 
     <!-- This script, cordova.js,  is built into Evothings Viewer (i.e. you won't need to add this file to your project) The idea is to pick up a http resource, even if you're using https, which would normally create a cross-protocol violation. The HTTP plug-in from Apache Cordova allows this to be carried out, see especially this post: https://evothings.com/evothings-secured-now-serving-over-https/ -->
 
@@ -76,9 +76,9 @@ var mSensors = {
 
 // Function to retrieve data, placing it in a "response" object
 function getJSON() {
-        var sensorNr = $('.kuken option:selected').val();
+    var sensorNr = $('.kuken option:selected').val();
         
-        console.log(sensorNr);
+    console.log(sensorNr);
     var sensor = mSensors[sensorNr];
     console.log(sensor);
     if (window.cordova) 
@@ -121,17 +121,21 @@ function getJSON() {
                                     sensor.fullData = response;
                                     console.log('inne i ajaxresponse');
                                     printData(sensor);
-                                }
+                            }
+                            else {
+                                printData(sensor, true)
+                            }
                         }
                 });
         }
 }
 
 
-function printData(rsensor)    
+function printData(rsensor, error = false)    
     {
         if (rsensor && rsensor.data) 
             {
+                console.log('första ifen')
             // Display the info.
                 html = '<h1>rsensor Data</h1>'
                  + '<br /><div id="time">Time  ' + rsensor.data.timestamp + '</div>'
@@ -139,11 +143,10 @@ function printData(rsensor)
                  + '<div id="temp">Temperature ' + rsensor.data.t + ' celcius</div>'
                  + '<img src="' + rsensor.image + '" />'
             } 
-    else 
+    if (error) 
             {
                 html = '<h1>Sensor Data</h1>'
                  + '<br />Sorry, sensor data not available right now :(</br>'
-                 + '<img src="' + rsensor.image + '" />'
             }
     document.getElementById("printHere").innerHTML= html;
     }
