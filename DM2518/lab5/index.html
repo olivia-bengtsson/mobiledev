@@ -1,70 +1,55 @@
 <!DOCTYPE html>
+<html>
 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, user-scalable=no,
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no,
         shrink-to-fit=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
-  <link rel="stylesheet" href="libs/onsenui/css/onsenui.css"/>
-  <link rel="stylesheet" href="libs/onsenui/css/onsen-css-components.css"/>
-  <link rel="stylesheet" href="css/style.css"/>
-  <script src="libs/onsenui/js/onsenui.min.js"></script>
-  <script>
-  ons.platform.select('android')
-  // ons.platform.select('ios')
-  </script>
-  <script src="libs/jquery/jquery-3.1.1.min.js"></script>
-  <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.js"></script>
-  <script src="libs/Chart.js"></script>
+
+    <title>Lab5 dome data</title>
+    <link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.css" />
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.js"></script>
+   <!-- <script src="Chart.js"></script>-->
+
+    <!-- This script, cordova.js,  is built into Evothings Viewer (i.e. you won't need to add this file to your project) The idea is to pick up a http resource, even if you're using https, which would normally create a cross-protocol violation. The HTTP plug-in from Apache Cordova allows this to be carried out, see especially this post: https://evothings.com/evothings-secured-now-serving-over-https/ -->
+
+    <!-- <script src="cordova.js"></script> -->
+
+    <script>
+    // Redirect console.log to Evothings Workbench, so you can see data under 'Tools'
+    if (window.hyper && window.hyper.log) { hyper.log = console.log }
+    </script>
 </head>
 
+ 
+
 <body>
-
-<!-- Tänker att när man klickar på något i menyn kallas en funktion som hämtar datan och visar den på rätt ställe -->
-
-<ons-navigator class="appNavigator" page="pageMain.html"></ons-navigator>
-
-
-<ons-template id="pageMain.html">
-  <ons-page id="pageMain">
-    <ons-toolbar>
-      <div class="center">Dome sensors</div>
-    </ons-toolbar>
-    <ons-list>
-        <ons-list-item onclick="showPage('sensor1.html', 1)" modifier="chevron" tappable>
-            Sensor 1
-        </ons-list-item>
-        <ons-list-item onclick="showPage('sensor2.html',2)" modifier="chevron" tappable>
-            Sensor 2
-        </ons-list-item>
-    </ons-list>
-  </ons-page>
-</ons-template>
-
-<ons-template id="sensor1.html">
-  <ons-page id="sensor1">
-    <ons-toolbar>
-      <div class="left"><ons-back-button>Menu</ons-back-button></div>
-      <div class="center">Sensor 1</div>
-    </ons-toolbar>
-    <div class="page-content">
-      Sensor 1 content
-    </div>
-  </ons-page>
-</ons-template>
-
-<ons-template id="sensor2.html">
-  <ons-page id="sensor2">
-    <ons-toolbar>
-      <div class="left"><ons-back-button>Menu</ons-back-button></div>
-      <div class="center">Sensor 2</div>
-    </ons-toolbar>
-    <div class="page-content">
-      Sensor 2 content
-    </div>
-  </ons-page>
-</ons-template>
+<select class="kuken">
+  <option value="1">Sensor 1</option>
+  <option value="2">Sensor 2</option>
+  <option value="3">Sensor 3</option>
+  <option value="4">Sensor 4</option>
+  <option value="5">Sensor 5</option>
+  <option value="6">Sensor 6</option>
+</select>
+<button onClick="getJSON();">Retrieve some sensor data</button>
+<div id="printHere"></div>
 
 <script>
+
+// Create an empty sensor object as a global 
+//var sensor = {};
+
+// Where the sensor data is stored
+var mSensorDataURL = 'http://backup.evothings.com:8082/output/';
+
+// A subscriber's key (Five other keys also availble at http://smartspaces.r1.kth.se:8082)
+//sensor.key = "BQa4EqqbgxfMgpBQ8XwNhvP82Dj";
+
+// A bitmap image describing where the sensor is located
+//sensor.image = "https://evothings.com/demos/dome_pics/IMG_1758.JPG";
 
 var mSensors = {
         1: { 
@@ -88,15 +73,14 @@ var mSensors = {
             "image":"https://evothings.com/demos/dome_pics/IMG_1760.JPG"}
 };
 
-function showPage(page,sensorNr) {
-    // Call getJson here , maybe move pushpage
-    $('.appNavigator')[0].pushPage(page)
-}
 
 // Function to retrieve data, placing it in a "response" object
-function getJSON(sensorNr) 
-    {
-    sensor = mSensors[sensorNr];
+function getJSON() {
+        var sensorNr = $('.kuken option:selected').val();
+        
+        console.log(sensorNr);
+    var sensor = mSensors[sensorNr];
+    console.log(sensor);
     if (window.cordova) 
         {
             console.log('Using Apache Cordova HTTP GET function');
@@ -143,7 +127,9 @@ function getJSON(sensorNr)
         }
 }
 
-function printData(rsensor){
+
+function printData(rsensor)    
+    {
         if (rsensor && rsensor.data) 
             {
             // Display the info.
@@ -159,8 +145,12 @@ function printData(rsensor){
                  + '<br />Sorry, sensor data not available right now :(</br>'
                  + '<img src="' + rsensor.image + '" />'
             }
-    // document.getElementById("printHere").innerHTML= html;
-}
-</script>
+    document.getElementById("printHere").innerHTML= html;
+    }
+
+
+</script><button onclick="history.back()">Exit</button><br />
+
+
 </body>
 </html>

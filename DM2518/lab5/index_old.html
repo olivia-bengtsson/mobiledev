@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.css" />
     <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
     <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.js"></script>
-    <script src="Chart.js"></script>
+   <!-- <script src="Chart.js"></script>-->
 
     <!-- This script, cordova.js,  is built into Evothings Viewer (i.e. you won't need to add this file to your project) The idea is to pick up a http resource, even if you're using https, which would normally create a cross-protocol violation. The HTTP plug-in from Apache Cordova allows this to be carried out, see especially this post: https://evothings.com/evothings-secured-now-serving-over-https/ -->
 
@@ -32,7 +32,7 @@
 var sensor = {};
 
 // Where the sensor data is stored
-var mSensorDataURL = 'http://backup.evothings.com:8080/output/';
+var mSensorDataURL = 'http://backup.evothings.com:8082/output/';
 
 // A subscriber's key (Five other keys also availble at http://smartspaces.r1.kth.se:8082)
 sensor.key = "BQa4EqqbgxfMgpBQ8XwNhvP82Dj";
@@ -64,8 +64,9 @@ var mSensors = {
 
 
 // Function to retrieve data, placing it in a "response" object
-function getJSON(sensorNr) 
+function getJSON() 
     {
+        var sensorNr = $('.kuken').value();
     sensor = mSensors[sensorNr];
     if (window.cordova) 
         {
@@ -136,8 +137,15 @@ function printData(rsensor)
 
 
 </script><button onclick="history.back()">Exit</button><br />
-
-<button onClick="getJSON(2);">Retrieve some sensor data</button>
+<select class="kuken">
+  <option value="1">Sensor 1</option>
+  <option value="2">Sensor 2</option>
+  <option value="3">Sensor 3</option>
+  <option value="4">Sensor 4</option>
+  <option value="5">Sensor 5</option>
+  <option value="6">Sensor 6</option>
+</select>
+<button onClick="getJSON();">Retrieve some sensor data</button>
 <div id="printHere"></div>
 
 
