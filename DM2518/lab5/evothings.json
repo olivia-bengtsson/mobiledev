@@ -1,0 +1,14 @@
+{
+  "uuid": "bedaf815-457d-40d5-b3c4-707f102c38d5",
+  "name": "lab5",
+  "title": "Lab5",
+  "description": "App oneline description.",
+  "long-description": "App long description.",
+  "version": "",
+  "author-name": "Evothings",
+  "author-email": "build@evothings.com",
+  "author-url": "https://evothings.com",
+  "cordova-id": "com.evothings.samples.lab",
+  "plugins": [],
+  "libraries": []
+}

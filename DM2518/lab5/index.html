@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no,
+        shrink-to-fit=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+  <link rel="stylesheet" href="libs/onsenui/css/onsenui.css"/>
+  <link rel="stylesheet" href="libs/onsenui/css/onsen-css-components.css"/>
+  <link rel="stylesheet" href="css/style.css"/>
+  <script src="libs/onsenui/js/onsenui.min.js"></script>
+  <script>
+  ons.platform.select('android')
+  // ons.platform.select('ios')
+  </script>
+  <script src="libs/jquery/jquery-3.1.1.min.js"></script>
+  <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.js"></script>
+  <script src="libs/Chart.js"></script>
+</head>
+
+<body>
+
+<!-- Tänker att när man klickar på något i menyn kallas en funktion som hämtar datan och visar den på rätt ställe -->
+
+<ons-navigator class="appNavigator" page="pageMain.html"></ons-navigator>
+
+
+<ons-template id="pageMain.html">
+  <ons-page id="pageMain">
+    <ons-toolbar>
+      <div class="center">Dome sensors</div>
+    </ons-toolbar>
+    <ons-list>
+        <ons-list-item onclick="showPage('sensor1.html', 1)" modifier="chevron" tappable>
+            Sensor 1
+        </ons-list-item>
+        <ons-list-item onclick="showPage('sensor2.html',2)" modifier="chevron" tappable>
+            Sensor 2
+        </ons-list-item>
+    </ons-list>
+  </ons-page>
+</ons-template>
+
+<ons-template id="sensor1.html">
+  <ons-page id="sensor1">
+    <ons-toolbar>
+      <div class="left"><ons-back-button>Menu</ons-back-button></div>
+      <div class="center">Sensor 1</div>
+    </ons-toolbar>
+    <div class="page-content">
+      Sensor 1 content
+    </div>
+  </ons-page>
+</ons-template>
+
+<ons-template id="sensor2.html">
+  <ons-page id="sensor2">
+    <ons-toolbar>
+      <div class="left"><ons-back-button>Menu</ons-back-button></div>
+      <div class="center">Sensor 2</div>
+    </ons-toolbar>
+    <div class="page-content">
+      Sensor 2 content
+    </div>
+  </ons-page>
+</ons-template>
+
+<script>
+
+var mSensors = {
+        1: { 
+            "key":"BQa4EqqbgxfMgpBQ8XwNhvP82Dj",
+            "image":"https://evothings.com/demos/dome_pics/IMG_1758.JPG"
+        },
+        2: { 
+            "key":"J3Wgj9qegGFX4r9KlxxGfaeMXQB",
+            "image":"https://evothings.com/demos/dome_pics/IMG_1759.JPG"},
+        3: { 
+            "key":"lB6p49pzXdFGQjpLwzzOTWj10rd",
+            "image":"https://evothings.com/demos/dome_pics/IMG_1762.JPG"},
+        4: {
+            "key":"L4D98lO9ObtOdzx3PggKIaWmMGA",
+            "image":"https://evothings.com/demos/dome_pics/IMG_1763.JPG"},
+        5: {
+            "key":"LAjQ9E8PBOiOdzx3PggKIaWmMGA",
+            "image":"https://evothings.com/demos/dome_pics/IMG_1761.JPG"},
+        6: { 
+            "key":"BkPNOapq2WSMgpVlNQQKFYXPBWr",
+            "image":"https://evothings.com/demos/dome_pics/IMG_1760.JPG"}
+};
+
+function showPage(page,sensorNr) {
+    // Call getJson here , maybe move pushpage
+    $('.appNavigator')[0].pushPage(page)
+}
+
+// Function to retrieve data, placing it in a "response" object
+function getJSON(sensorNr) 
+    {
+    sensor = mSensors[sensorNr];
+    if (window.cordova) 
+        {
+            console.log('Using Apache Cordova HTTP GET function');
+            cordovaHTTP.get(
+                mSensorDataURL + sensor.key + '.json?gt[timestamp]=now-1day&page=1',
+                function (response) 
+                    {
+                        if (response) 
+                            {
+                                sensor.data = JSON.parse(response.data)[0];
+                                sensor.fullData = JSON.parse(response.data);
+                                printData();
+                            }
+                    },
+                function (error) 
+                    {
+                    console.log(JSON.stringify(error));
+                    });
+        }    
+    else 
+        {
+            console.log('Not using Cordova, fallback to AJAX via jquery');
+            $.ajax({
+                    url: mSensorDataURL + sensor.key + ".json?gt[timestamp]=now- 1day",
+                    jsonp: "callback",
+                    cache: true,
+                    dataType: "jsonp",
+                    data: 
+                        {
+                            page: 1
+                        },
+                    success: function(response) 
+                        {
+                            console.log(response);
+                            if (response && response[0]) 
+                                {
+                                    sensor.data = response[0];
+                                    sensor.fullData = response;
+                                    console.log('inne i ajaxresponse');
+                                    printData(sensor);
+                                }
+                        }
+                });
+        }
+}
+
+function printData(rsensor){
+        if (rsensor && rsensor.data) 
+            {
+            // Display the info.
+                html = '<h1>rsensor Data</h1>'
+                 + '<br /><div id="time">Time  ' + rsensor.data.timestamp + '</div>'
+                 + '<div id="hum">Humidity ' + rsensor.data.h + ' % (rel)</div>'
+                 + '<div id="temp">Temperature ' + rsensor.data.t + ' celcius</div>'
+                 + '<img src="' + rsensor.image + '" />'
+            } 
+    else 
+            {
+                html = '<h1>Sensor Data</h1>'
+                 + '<br />Sorry, sensor data not available right now :(</br>'
+                 + '<img src="' + rsensor.image + '" />'
+            }
+    // document.getElementById("printHere").innerHTML= html;
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no,
+        shrink-to-fit=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+
+    <title>Lab5 dome data</title>
+    <link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.css" />
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.js"></script>
+    <script src="Chart.js"></script>
+
+    <!-- This script, cordova.js,  is built into Evothings Viewer (i.e. you won't need to add this file to your project) The idea is to pick up a http resource, even if you're using https, which would normally create a cross-protocol violation. The HTTP plug-in from Apache Cordova allows this to be carried out, see especially this post: https://evothings.com/evothings-secured-now-serving-over-https/ -->
+
+    <!-- <script src="cordova.js"></script> -->
+
+    <script>
+    // Redirect console.log to Evothings Workbench, so you can see data under 'Tools'
+    if (window.hyper && window.hyper.log) { hyper.log = console.log }
+    </script>
+</head>
+
+ 
+
+<body>
+<script>
+
+// Create an empty sensor object as a global 
+var sensor = {};
+
+// Where the sensor data is stored
+var mSensorDataURL = 'http://backup.evothings.com:8080/output/';
+
+// A subscriber's key (Five other keys also availble at http://smartspaces.r1.kth.se:8082)
+sensor.key = "BQa4EqqbgxfMgpBQ8XwNhvP82Dj";
+
+// A bitmap image describing where the sensor is located
+sensor.image = "https://evothings.com/demos/dome_pics/IMG_1758.JPG";
+
+var mSensors = {
+        1: { 
+            "key":"BQa4EqqbgxfMgpBQ8XwNhvP82Dj",
+            "image":"https://evothings.com/demos/dome_pics/IMG_1758.JPG"
+        },
+        2: { 
+            "key":"J3Wgj9qegGFX4r9KlxxGfaeMXQB",
+            "image":"https://evothings.com/demos/dome_pics/IMG_1759.JPG"},
+        3: { 
+            "key":"lB6p49pzXdFGQjpLwzzOTWj10rd",
+            "image":"https://evothings.com/demos/dome_pics/IMG_1762.JPG"},
+        4: {
+            "key":"L4D98lO9ObtOdzx3PggKIaWmMGA",
+            "image":"https://evothings.com/demos/dome_pics/IMG_1763.JPG"},
+        5: {
+            "key":"LAjQ9E8PBOiOdzx3PggKIaWmMGA",
+            "image":"https://evothings.com/demos/dome_pics/IMG_1761.JPG"},
+        6: { 
+            "key":"BkPNOapq2WSMgpVlNQQKFYXPBWr",
+            "image":"https://evothings.com/demos/dome_pics/IMG_1760.JPG"}
+};
+
+
+// Function to retrieve data, placing it in a "response" object
+function getJSON(sensorNr) 
+    {
+    sensor = mSensors[sensorNr];
+    if (window.cordova) 
+        {
+            console.log('Using Apache Cordova HTTP GET function');
+            cordovaHTTP.get(
+                mSensorDataURL + sensor.key + '.json?gt[timestamp]=now-1day&page=1',
+                function (response) 
+                    {
+                        if (response) 
+                            {
+                                sensor.data = JSON.parse(response.data)[0];
+                                sensor.fullData = JSON.parse(response.data);
+                                printData();
+                            }
+                    },
+                function (error) 
+                    {
+                    console.log(JSON.stringify(error));
+                    });
+        }    
+    else 
+        {
+            console.log('Not using Cordova, fallback to AJAX via jquery');
+            $.ajax({
+                    url: mSensorDataURL + sensor.key + ".json?gt[timestamp]=now- 1day",
+                    jsonp: "callback",
+                    cache: true,
+                    dataType: "jsonp",
+                    data: 
+                        {
+                            page: 1
+                        },
+                    success: function(response) 
+                        {
+                            console.log(response);
+                            if (response && response[0]) 
+                                {
+                                    sensor.data = response[0];
+                                    sensor.fullData = response;
+                                    console.log('inne i ajaxresponse');
+                                    printData(sensor);
+                                }
+                        }
+                });
+        }
+}
+
+
+function printData(rsensor)    
+    {
+        if (rsensor && rsensor.data) 
+            {
+            // Display the info.
+                html = '<h1>rsensor Data</h1>'
+                 + '<br /><div id="time">Time  ' + rsensor.data.timestamp + '</div>'
+                 + '<div id="hum">Humidity ' + rsensor.data.h + ' % (rel)</div>'
+                 + '<div id="temp">Temperature ' + rsensor.data.t + ' celcius</div>'
+                 + '<img src="' + rsensor.image + '" />'
+            } 
+    else 
+            {
+                html = '<h1>Sensor Data</h1>'
+                 + '<br />Sorry, sensor data not available right now :(</br>'
+                 + '<img src="' + rsensor.image + '" />'
+            }
+    document.getElementById("printHere").innerHTML= html;
+    }
+
+
+</script><button onclick="history.back()">Exit</button><br />
+
+<button onClick="getJSON(2);">Retrieve some sensor data</button>
+<div id="printHere"></div>
+
+
+</body>
+</html>
